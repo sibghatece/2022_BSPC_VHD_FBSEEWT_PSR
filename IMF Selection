@@ -1,0 +1,212 @@
+clc
+clear all
+close all
+% samp=250;
+P_values_mat_AS=NaN(202,22);  P_values_mat_MS=NaN(202,22); P_values_mat_N=NaN(202,22); P_values_mat_MVP=NaN(202,22);P_values_mat_MR=NaN(202,22);      
+En_values_mat_MS=NaN(202,22); En_values_mat_AS=NaN(202,22);En_values_mat_N=NaN(202,22);En_values_mat_MVP=NaN(202,22);En_values_mat_MR=NaN(202,22);     
+KLD_values_mat_MS=NaN(202,22); KLD_values_mat_AS=NaN(202,22);KLD_values_mat_N=NaN(202,22);KLD_values_mat_MVP=NaN(202,22);KLD_values_mat_MR=NaN(202,22); 
+cc_values_mat_MVP=NaN(202,22); cc_values_mat_AS=NaN(202,22); cc_values_mat_N=NaN(202,22);cc_values_mat_MR=NaN(202,22);cc_values_mat_MS=NaN(202,22);
+values_mat_N=NaN(1008,22);  
+path = fullfile('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Seg_Dataset\AS\'); %Path Where Sounds are Stored
+files = dir(path);
+for fileIndex=1:length(files)   % For reading all files in the folder
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'wav'))) % Now we are only intrested in .wav files
+             [s,fs] = audioread(fullfile(path,files(fileIndex).name));
+             fileIndex
+    
+     sn=HS_Filter(s,fs);
+     sr = resample(sn,1,16);
+%      sr1=sr(1:samp);
+      params = EWTDefaultParams(fs/16);
+[~,~,~,~,ewt,~,~]=FBexp(sr,params);
+     
+             siz=size(ewt);
+             sz(fileIndex)=siz(1);
+for m=1:siz(1)
+      [~,p(m)] = ttest(ewt{m});
+        en(m)=energy_imf(ewt{m});
+       cc(m)=corr_coeff_eswa(sr,ewt{m});
+        KLD(m)=KL_Dist_2PSDs(sr,ewt{m});
+end
+sh=[p];
+shz=size(sh);
+sez=shz(2);
+
+P_values_mat_AS(fileIndex,1:sez)=p;
+En_values_mat_AS(fileIndex,1:sez)=en;
+cc_values_mat_AS(fileIndex,1:sez)=cc;
+KLD_values_mat_AS(fileIndex,1:sez)=KLD;
+
+        end 
+    end
+end
+                     
+
+path = fullfile('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Seg_Dataset\MS\'); %Path Where Sounds are Stored
+files = dir(path);
+for fileIndex=1:length(files)   % For reading all files in the folder
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'wav'))) % Now we are only intrested in .wav files
+             [s,fs] = audioread(fullfile(path,files(fileIndex).name));
+             fileIndex
+     params = EWTDefaultParams(fs/16);
+     sn=HS_Filter(s,fs);
+     sr = resample(sn,1,16);
+%      sr1=sr(1:samp);
+[~,~,~,~,ewt,~,~]=FBexp(sr,params);
+     
+             siz=size(ewt);
+             sz(fileIndex)=siz(1);
+for m=1:siz(1)
+      [~,p(m)] = ttest(ewt{m});
+        en(m)=energy_imf(ewt{m});
+       cc(m)=corr_coeff_eswa(sr,ewt{m});
+        KLD(m)=KL_Dist_2PSDs(sr,ewt{m});
+end
+sh=[p];
+shz=size(sh);
+sez=shz(2);
+
+P_values_mat_MS(fileIndex,1:sez)=p;
+En_values_mat_MS(fileIndex,1:sez)=en;
+cc_values_mat_MS(fileIndex,1:sez)=cc;
+KLD_values_mat_MS(fileIndex,1:sez)=KLD;
+        end 
+    end
+end
+
+
+path = fullfile('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Seg_Dataset\MVP\'); %Path Where Sounds are Stored
+files = dir(path);
+for fileIndex=1:length(files)   % For reading all files in the folder
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'wav'))) % Now we are only intrested in .wav files
+             [s,fs] = audioread(fullfile(path,files(fileIndex).name));
+             fileIndex
+     params = EWTDefaultParams(fs/16);
+     sn=HS_Filter(s,fs);
+     sr = resample(sn,1,16);
+%      sr1=sr(1:samp);
+[~,~,~,~,ewt,~,~]=FBexp(sr,params);
+     
+             siz=size(ewt);
+             sz(fileIndex)=siz(1);
+for m=1:siz(1)
+      [~,p(m)] = ttest(ewt{m});
+        en(m)=energy_imf(ewt{m});
+       cc(m)=corr_coeff_eswa(sr,ewt{m});
+        KLD(m)=KL_Dist_2PSDs(sr,ewt{m});
+end
+sh=[p];
+shz=size(sh);
+sez=shz(2);
+
+P_values_mat_MVP(fileIndex,1:sez)=p;
+En_values_mat_MVP(fileIndex,1:sez)=en;
+cc_values_mat_MVP(fileIndex,1:sez)=cc;
+KLD_values_mat_MVP(fileIndex,1:sez)=KLD;
+        end 
+    end
+end
+
+path = fullfile('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Seg_Dataset\N\'); %Path Where Sounds are Stored
+files = dir(path);
+for fileIndex=1:length(files)   % For reading all files in the folder
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'wav'))) % Now we are only intrested in .wav files
+             [s,fs] = audioread(fullfile(path,files(fileIndex).name));
+             fileIndex
+     params = EWTDefaultParams(fs/16);
+     sn=HS_Filter(s,fs);
+     sr = resample(sn,1,16);
+%      sr1=sr(1:samp);
+[~,~,~,~,ewt,~,~]=FBexp(sr,params);
+     
+             siz=size(ewt);
+             sz(fileIndex)=siz(1);
+for m=1:siz(1)
+      [~,p(m)] = ttest(ewt{m});
+        en(m)=energy_imf(ewt{m});
+       cc(m)=corr_coeff_eswa(sr,ewt{m});
+        KLD(m)=KL_Dist_2PSDs(sr,ewt{m});
+end
+sh=[p];
+shz=size(sh);
+sez=shz(2);
+
+P_values_mat_N(fileIndex,1:sez)=p;
+En_values_mat_N(fileIndex,1:sez)=en;
+cc_values_mat_N(fileIndex,1:sez)=cc;
+KLD_values_mat_N(fileIndex,1:sez)=KLD;
+        end 
+    end
+end
+
+
+path = fullfile('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Seg_Dataset\MR\'); %Path Where Sounds are Stored
+files = dir(path);
+for fileIndex=1:length(files)   % For reading all files in the folder
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'wav'))) % Now we are only intrested in .wav files
+             [s,fs] = audioread(fullfile(path,files(fileIndex).name));
+             fileIndex
+     params = EWTDefaultParams(fs/4);
+     sn=HS_Filter(s,fs);
+     sr = resample(sn,1,16);
+%      sr1=sr(1:samp);
+[~,~,~,~,ewt,~,~]=FBexp(sr,params);
+     
+             siz=size(ewt);
+             sz(fileIndex)=siz(1);
+for m=1:siz(1)
+      [~,p(m)] = ttest(ewt{m});
+        en(m)=energy_imf(ewt{m});
+       cc(m)=corr_coeff_eswa(sr,ewt{m});
+        KLD(m)=KL_Dist_2PSDs(sr,ewt{m});
+end
+sh=[p];
+shz=size(sh);
+sez=shz(2);
+
+P_values_mat_MR(fileIndex,1:sez)=p;
+En_values_mat_MR(fileIndex,1:sez)=en;
+cc_values_mat_MR(fileIndex,1:sez)=cc;
+KLD_values_mat_MR(fileIndex,1:sez)=KLD;
+        end 
+    end
+end
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD_AS.xlsx',KLD_values_mat_AS);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD_MS.xlsx',KLD_values_mat_MS);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD_MR.xlsx',KLD_values_mat_MR);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD_MVP.xlsx',KLD_values_mat_MVP);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD_N.xlsx',KLD_values_mat_N);
+
+
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En_AS.xlsx',En_values_mat_AS);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En_MS.xlsx',En_values_mat_MS);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En_MR.xlsx',En_values_mat_MR);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En_MVP.xlsx',En_values_mat_MVP);
+xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En_N.xlsx',En_values_mat_N);
+
+En=[En_values_mat_AS(3:end,:);En_values_mat_MS(3:end,:);En_values_mat_MR(3:end,:);En_values_mat_MVP(3:end,:);En_values_mat_N(3:end,:)];
+KLD=[KLD_values_mat_AS(3:end,:);KLD_values_mat_MS(3:end,:);KLD_values_mat_MR(3:end,:);KLD_values_mat_MVP(3:end,:);KLD_values_mat_N(3:end,:)];
+P=[P_values_mat_AS(3:end,:);P_values_mat_MS(3:end,:);P_values_mat_MR(3:end,:);P_values_mat_MVP(3:end,:);P_values_mat_N(3:end,:)];
+CC=[cc_values_mat_AS(3:end,:);cc_values_mat_MS(3:end,:);cc_values_mat_MR(3:end,:);cc_values_mat_MVP(3:end,:);cc_values_mat_N(3:end,:)];
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\En.xlsx',En);
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\KLD.xlsx',KLD);
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\P.xlsx',P);
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\CC.xlsx',CC);
+
+
+
+Final=[En;KLD;P;CC];
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\Final_FBSE_IMFs_Priority.xlsx',Final);
+% AS_mat=values_mat_AS(3:202,:);
+% MR_mat=values_mat_MR(3:202,:);
+% MVP_mat=values_mat_MVP(3:202,:);
+% N_mat=values_mat_N(3:202,:);
+% MS_mat=values_mat_MS(3:202,:);
+
+% Final_Eval=[AS_mat;MR_mat;MVP_mat;N_mat;MS_mat];
+% xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Manuscript\IMF_Selection\All_parameters.xlsx',Final_Eval
