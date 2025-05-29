@@ -1,0 +1,22 @@
+clc
+clear all
+close all
+
+ path='C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\features_april\sel_feat\';
+N=double(repelem(1,200,1));
+MR=double(repelem(2,200,1));
+AS=double(repelem(3,200,1));
+MVP=double(repelem(4,200,1));
+MS=double(repelem(5,200,1));
+
+label=[AS;MR;MVP;N;MS];
+
+for n=1:44
+no=num2str(n);
+ext='.xlsx';
+fullname=strcat(path,no,ext)
+feat=xlsread(fullname);
+p=TooKhanML(feat,label)
+mx(n)=max(p)
+end
+
