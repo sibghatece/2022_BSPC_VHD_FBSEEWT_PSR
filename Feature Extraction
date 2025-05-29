@@ -1,0 +1,84 @@
+clc
+clear all
+close all
+addpath('C:\Users\Sibghatullah\Documents\MATLAB\DrTooFSA');
+savepath
+AS=string(repelem({'AS'},200,1));
+MR=string(repelem({'MR'},200,1));
+MVP=string(repelem({'MVP'},200,1));
+N=string(repelem({'Normal'},200,1));
+MS=string(repelem({'MS'},200,1));
+label=[AS;MR;MVP;N;MS];
+
+rasta='C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\Database\';
+manzil={'AS\','MR\','MVP\','N\','MS\'};
+
+
+for k=1:5
+naam_dal=strcat(rasta,manzil{k});
+
+
+path11 = fullfile(naam_dal); %Path Where audio file are stored
+files = dir(path11);
+% k=0;
+
+parfor fileIndex=1:length(files)   % For reading all files in the folder
+
+% p=fileIndex-1;
+    if (files(fileIndex).isdir == 0)
+        if (~isempty(strfind(files(fileIndex).name,'.wav'))) % 
+            fullfile(path11,files(fileIndex).name)%
+[s,fs]=audioread(fullfile(path11,files(fileIndex).name));
+
+% params = EWTDefaultParams(fs);
+sn=HS_Filter(s,fs);
+ sr = resample(sn,1,4);
+
+%  [~,~,~,~,ewt,~,~]=FBexp(sr,params);
+%  [ewt]=EWT1D(sr,fs,params);
+%     m1=ewt{1};
+%     m2=ewt{2};
+%     m3=ewt{3};
+%     m4=ewt{4};
+% %     m5=ewt{5};
+    
+%     m1=m1(1:500,:); m2=m2(1:500,:); m3=m3(1:500,:); m4=m4(1:500,:); m5=m5(1:500,:);
+    mf1=GF_RPS(sr);
+    mf2=GF_RPS(sr);
+    mf3=GF_RPS(sr);
+    mf4=GF_RPS(sr);
+%     mf5=GF_RPS(m5);
+    
+ 
+
+
+
+
+FM(fileIndex,:)=[mf1 mf2 mf3 mf4];
+ 
+
+        end
+    end
+end
+   F{k}=FM;
+end
+
+F1=F{1};
+F1=F1(3:end,:);
+
+F2=F{2};
+F2=F2(3:end,:);
+
+F3=F{3};
+F3=F3(3:end,:);
+
+F4=F{4};
+F4=F4(3:end,:);
+
+F5=F{5};
+F5=F5(3:end,:);
+
+Full=[F1;F2;F3;F4;F5];
+combi=[Full,label];
+
+xlswrite('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\Heart Sounds Classification Paper\EWT_Features\Plain_SignalFull_GF_2khz_khan_.xlsx',combi)
